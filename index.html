@@ -1,0 +1,97 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Message Myself</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1d3557"><link rel="icon" href="icons/icon-192.png" type="image/png"><link rel="apple-touch-icon" href="icons/icon-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Messages">
+<style>
+:root{--bg:#16243f;--bg2:#1d3557;--card:#22385c;--ink:#f3f6fb;--mut:#a9b8cf;--acc:#e6a04a;--me:#2f6fbf;--line:#2d4166}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;font:15px/1.45 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:linear-gradient(180deg,var(--bg2),var(--bg));display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:10px;padding:max(12px,env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid var(--line)}
+h1{flex:1;margin:0;font:600 21px Georgia,serif}h1 small{display:block;font:12px -apple-system,system-ui,sans-serif;color:var(--mut);margin-top:2px}
+.ib{width:42px;height:42px;border:0;border-radius:12px;background:var(--card);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}.ib svg{width:21px;height:21px}
+#feed{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
+.day{align-self:center;font-size:11px;color:var(--mut);letter-spacing:.08em;text-transform:uppercase;margin:6px 0}
+.msg{align-self:flex-end;max-width:82%;background:var(--me);border-radius:18px 18px 6px 18px;padding:6px;box-shadow:0 2px 8px #0003}
+.msg img,.msg video{display:block;max-width:100%;max-height:340px;border-radius:13px;cursor:pointer;background:#0002}
+.msg .cap{padding:6px 8px 2px;white-space:pre-wrap;overflow-wrap:anywhere}.msg .tm{font-size:10.5px;color:#d7e3f7;text-align:right;padding:2px 8px 2px}
+.file{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;min-width:200px}.file svg{width:30px;height:30px;flex:0 0 30px}.file b{display:block;overflow-wrap:anywhere;font-size:14px}.file small{color:#d7e3f7}
+footer{padding:8px 10px max(10px,env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#16243fcc}
+#pend{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}#pend:empty{display:none}.pc{position:relative;flex:0 0 64px;height:64px;border-radius:10px;background:var(--card);overflow:hidden;font-size:10px;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px}.pc img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}.pc button{position:absolute;top:2px;right:2px;width:22px;height:22px;border-radius:50%;border:0;background:#000a;color:#fff;font-size:13px;line-height:1;cursor:pointer;z-index:1}
+.row{display:flex;gap:8px;align-items:flex-end}textarea{flex:1;resize:none;min-height:44px;max-height:140px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);padding:11px 12px;font-size:15px;font-family:inherit}textarea:focus{outline:2px solid var(--acc);border-color:transparent}
+.send{background:var(--acc);color:#1b1408}.send:disabled{opacity:.5}
+#bar{height:4px;background:var(--line);border-radius:2px;margin-bottom:8px;overflow:hidden;display:none}#bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+.auth,.setup{max-width:380px;margin:auto;padding:24px 18px;width:100%}.auth h2,.setup h2{font:600 26px Georgia,serif;margin:0 0 6px;text-align:center}.auth p,.setup p{color:var(--mut);text-align:center;margin:0 0 16px}
+.auth input{width:100%;margin-bottom:10px;font-size:17px;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.btn{width:100%;min-height:48px;border:0;border-radius:14px;background:var(--acc);color:#1b1408;font-weight:700;font-size:16px;font-family:inherit;cursor:pointer;margin-top:4px}.btn.alt{background:var(--card);color:var(--ink)}
+.err{color:#ffb4a8;text-align:center;font-size:14px;min-height:20px;margin-top:8px}
+#view{position:fixed;inset:0;background:#000e;z-index:20;display:none;flex-direction:column}#view.on{display:flex}#vbody{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;padding:10px}#vbody img,#vbody video{max-width:100%;max-height:100%}
+.vbar{display:flex;gap:8px;justify-content:space-between;padding:max(10px,env(safe-area-inset-top)) 12px 10px}.vbar.b{padding:10px 12px max(14px,env(safe-area-inset-bottom))}.vbar .btn{width:auto;flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px}.vbar .btn svg{width:18px;height:18px}.del{background:#5a1f1f;color:#ffd9d3}
+#menu{position:fixed;inset:0;background:#0008;z-index:15;display:none;justify-content:flex-end}#menu.on{display:flex}.mp{width:82%;max-width:330px;background:var(--bg);padding:max(18px,env(safe-area-inset-top)) 16px 20px;display:flex;flex-direction:column;gap:12px}
+.meter{background:var(--card);border-radius:14px;padding:12px}.meter .t{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:8px}.meter .t i{display:block;height:100%;background:var(--acc)}
+.mut{color:var(--mut);font-size:13px}.empty{margin:auto;text-align:center;color:var(--mut);max-width:260px}.empty svg{width:56px;height:56px;color:var(--acc);opacity:.85}
+[hidden]{display:none!important}
+</style></head><body>
+<div id="app" style="display:contents"></div>
+<div id="view"><div class="vbar"><span class="mut" id="vname" style="align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span><button class="ib" id="vx" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><div id="vbody"></div>
+<div class="vbar b"><button class="btn" id="vdl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Save full size</button><button class="btn del" id="vdel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Delete</button></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const URL_='https://pbkrwghuwqufosodcxtw.supabase.co',KEY='sb_publishable_bzFGyPbxFyfgU4CQ72ryuQ_S4vwUvt2',BUCKET='mm',QUOTA=1024**3,MAXF=50*1024*1024,VER='mm-v1';
+const sb=supabase.createClient(URL_,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+const $=id=>document.getElementById(id),A=$('app'),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const IC={clip:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5l-8 8a5 5 0 0 1-7-7l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7L9.7 17.2a1.7 1.7 0 0 1-2.4-2.4L15 7"/></svg>',
+send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l16-8-6 16-3-7z"/><path d="M11 13l9-9"/></svg>',
+menu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+file:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H10l-5 4v-4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>'};
+const fmt=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(0)+' KB':b<1073741824?(b/1048576).toFixed(1)+' MB':(b/1073741824).toFixed(2)+' GB';
+let user=null,MSG=[],URLS={},pend=[],cur=null;
+// ---- auth ----
+function authView(msg){A.innerHTML=`<div class="auth"><h2>Message Myself</h2><p>A private place to send yourself photos, files and notes.</p>
+<input id="em" type="email" autocomplete="email" placeholder="Email"><input id="pw" type="password" autocomplete="current-password" placeholder="Password (8+ characters)">
+<button class="btn" id="si">Sign in</button><button class="btn alt" id="su">Create account</button><div class="err" id="ae">${esc(msg||'')}</div></div>`;
+ const go=async up=>{const email=$('em').value.trim(),password=$('pw').value;if(!email||password.length<8){$('ae').textContent='Enter your email and a password of at least 8 characters.';return}$('ae').textContent=up?'Creating your account...':'Signing in...';
+  const r=up?await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+'/message-myself/'}}):await sb.auth.signInWithPassword({email,password});
+  if(r.error){$('ae').textContent=/confirm/i.test(r.error.message)?'Please confirm your email first, then sign in.':r.error.message;return}
+  if(up&&!r.data.session){$('ae').textContent='Check your email and tap the confirm link, then come back and sign in.';return}};
+ $('si').onclick=()=>go(false);$('su').onclick=()=>go(true);$('pw').onkeydown=e=>{if(e.key==='Enter')go(false)}}
+// ---- main ----
+function mainView(){A.innerHTML=`<header><h1>Message Myself<small id="used">Loading...</small></h1><button class="ib" id="mb" aria-label="Menu">${IC.menu}</button></header>
+<div id="feed"></div><footer><div id="bar"><i></i></div><div id="pend"></div><div class="row"><button class="ib" id="att" aria-label="Add photos or files">${IC.clip}</button><input type="file" id="fi" multiple hidden>
+<textarea id="cap" rows="1" placeholder="Add a caption or note"></textarea><button class="ib send" id="snd" aria-label="Send">${IC.send}</button></div></footer>
+<div id="menu"><div class="mp"><b style="font:600 20px Georgia,serif">Message Myself</b><div class="meter"><div id="mtx">Storage</div><div class="t"><i id="mbar" style="width:0"></i></div><div class="mut" style="margin-top:6px">Free plan: 1 GB total, 50 MB per file. Files are kept at full quality.</div></div>
+<div class="mut">Signed in as ${esc(user.email)}</div><button class="btn alt" id="ref">Refresh</button><button class="btn alt" id="so">Sign out</button><div class="mut" style="margin-top:auto">Version ${VER} · Private: only you can see these.</div></div></div>`;
+ $('att').onclick=()=>$('fi').click();$('fi').onchange=e=>{addPend([...e.target.files]);e.target.value=''};$('snd').onclick=send;
+ $('cap').oninput=e=>{e.target.style.height='auto';e.target.style.height=Math.min(140,e.target.scrollHeight)+'px'};
+ $('mb').onclick=()=>$('menu').classList.add('on');$('menu').onclick=e=>{if(e.target.id==='menu')$('menu').classList.remove('on')};
+ $('so').onclick=async()=>{if(!confirm('Sign out? Your messages stay safe in your account.'))return;await sb.auth.signOut()};$('ref').onclick=()=>{$('menu').classList.remove('on');load()};load()}
+function setupView(){A.innerHTML=`<div class="setup"><h2>Almost ready</h2><p>Your storage has not been set up yet. Open your Supabase project, go to SQL Editor, paste the setup script and tap Run. Then come back and tap Try again.</p><button class="btn" onclick="mainView()">Try again</button><button class="btn alt" onclick="sb.auth.signOut()">Sign out</button></div>`}
+function addPend(fs){fs.forEach(f=>{if(f.size>MAXF){alert(f.name+' is '+fmt(f.size)+'. The free plan allows up to 50 MB per file.');return}pend.push(f)});drawPend()}
+function drawPend(){const P=$('pend');P.innerHTML='';pend.forEach((f,i)=>{const d=document.createElement('div');d.className='pc';if(f.type.startsWith('image/')){const im=document.createElement('img');im.src=URL.createObjectURL(f);d.appendChild(im)}else d.textContent=f.name;const x=document.createElement('button');x.textContent='×';x.setAttribute('aria-label','Remove');x.onclick=()=>{pend.splice(i,1);drawPend()};d.appendChild(x);P.appendChild(d)})}
+async function load(){const r=await sb.from('messages').select('*').order('created_at');if(r.error){if(/messages|relation|schema cache|does not exist/i.test(r.error.message)||r.status===404)return setupView();$('feed').innerHTML='<div class="empty">Could not load right now. Check your connection.</div>';return}
+ MSG=r.data;const paths=MSG.filter(m=>m.path&&!URLS[m.path]).map(m=>m.path);if(paths.length){const s=await sb.storage.from(BUCKET).createSignedUrls(paths,3600*12);(s.data||[]).forEach(x=>{if(x.signedUrl)URLS[x.path]=x.signedUrl})}draw()}
+function draw(){const F=$('feed'),used=MSG.reduce((a,m)=>a+(+m.size||0),0);$('used').textContent=fmt(used)+' of 1 GB used';$('mtx').textContent=fmt(used)+' of 1 GB used';$('mbar').style.width=Math.min(100,used/QUOTA*100)+'%';
+ if(!MSG.length){F.innerHTML=`<div class="empty">${IC.chat}<p>Nothing here yet. Tap the paperclip to send yourself photos or files, or just write a note.</p></div>`;return}
+ let h='',lastD='';MSG.forEach((m,i)=>{const d=new Date(m.created_at),ds=d.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'});if(ds!==lastD){h+=`<div class="day">${ds}</div>`;lastD=ds}
+  const u=m.path&&URLS[m.path];let body='';if(m.path){if(/^image\//.test(m.mime)&&u)body=`<img src="${u}" loading="lazy" alt="${esc(m.name)}" data-i="${i}">`;else if(/^video\//.test(m.mime)&&u)body=`<video src="${u}#t=0.1" preload="metadata" data-i="${i}" playsinline></video>`;else body=`<div class="file" data-i="${i}">${IC.file}<div><b>${esc(m.name)}</b><small>${fmt(+m.size||0)}</small></div></div>`}
+  h+=`<div class="msg">${body}${m.caption?`<div class="cap" data-i="${i}">${esc(m.caption)}</div>`:''}<div class="tm">${d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</div></div>`});
+ F.innerHTML=h;F.querySelectorAll('[data-i]').forEach(e=>e.onclick=ev=>{ev.preventDefault();openView(MSG[+e.dataset.i])});F.scrollTop=F.scrollHeight}
+async function send(){const cap=$('cap').value.trim();if(!pend.length&&!cap)return;const b=$('snd');b.disabled=true;const bar=$('bar');bar.style.display='block';const fs=pend.slice();pend=[];drawPend();
+ try{if(!fs.length){const r=await sb.from('messages').insert({caption:cap});if(r.error)throw r.error}
+  for(let i=0;i<fs.length;i++){const f=fs[i],safe=f.name.replace(/[^\w.\-]+/g,'_').slice(-80)||'file',path=user.id+'/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'-'+safe;bar.firstChild.style.width=(i/fs.length*100+5)+'%';
+   const up=await sb.storage.from(BUCKET).upload(path,f,{contentType:f.type||'application/octet-stream',upsert:false,cacheControl:'31536000'});if(up.error)throw up.error;
+   const r=await sb.from('messages').insert({caption:i===0?cap||null:null,path,name:f.name,mime:f.type||'application/octet-stream',size:f.size});if(r.error){await sb.storage.from(BUCKET).remove([path]);throw r.error}}
+  $('cap').value='';$('cap').style.height='';bar.firstChild.style.width='100%'}
+ catch(e){pend=fs.concat(pend);drawPend();alert('Could not send: '+(e.message||e)+'. Your files are still here, try again.')}
+ finally{b.disabled=false;setTimeout(()=>{bar.style.display='none';bar.firstChild.style.width=0},400);load()}}
+function openView(m){cur=m;const u=m.path&&URLS[m.path];$('vname').textContent=m.name||'Note';const B=$('vbody');
+ B.innerHTML=!m.path?`<div class="cap" style="white-space:pre-wrap;font-size:18px;max-width:600px">${esc(m.caption)}</div>`:/^image\//.test(m.mime)?`<img src="${u}" alt="">`:/^video\//.test(m.mime)?`<video src="${u}" controls playsinline></video>`:`<div class="file">${IC.file}<div><b>${esc(m.name)}</b><small>${fmt(+m.size||0)}</small></div></div>`;
+ $('vdl').hidden=!m.path;$('view').classList.add('on')}
+$('vx').onclick=()=>{$('view').classList.remove('on');$('vbody').innerHTML=''};
+$('vdl').onclick=async()=>{const m=cur;const s=await sb.storage.from(BUCKET).createSignedUrl(m.path,600,{download:m.name});if(s.error)return alert('Could not get the file right now.');
+ try{const blob=await (await fetch(s.data.signedUrl)).blob(),f=new File([blob],m.name,{type:m.mime});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e.name==='AbortError')return}
+ const a=document.createElement('a');a.href=s.data.signedUrl;a.download=m.name;document.body.appendChild(a);a.click();a.remove()};
+$('vdel').onclick=async()=>{const m=cur;if(!confirm('Delete this for good? This cannot be undone.'))return;if(m.path){const r=await sb.storage.from(BUCKET).remove([m.path]);if(r.error)return alert('Could not delete right now.')}
+ const r=await sb.from('messages').delete().eq('id',m.id);if(r.error)return alert('Could not delete right now.');$('vx').click();load()};
+sb.auth.onAuthStateChange((ev,s)=>{const u=s&&s.user||null;if((u&&u.id)===(user&&user.id))return;user=u;URLS={};u?mainView():authView()});
+sb.auth.getSession().then(({data})=>{if(!data.session){user=null;authView()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&user&&$('feed'))load()});
+if('serviceWorker' in navigator){const had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(had)location.reload()});navigator.serviceWorker.register('/message-myself/sw.js',{scope:'/message-myself/'}).catch(()=>{})}
+</script></body></html>
